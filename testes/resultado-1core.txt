@@ -1,0 +1,36 @@
+❯  perf stat -e task-clock,cycles,instructions,branches,branch-misses,cpu-migrations,context-switches,cache-references,cache-misses,major-faults,minor-faults,page-faults,dTLB-loads,dTLB-load-misses,dTLB-stores,dTLB-store-misses,iTLB-loads,iTLB-load-misses -o resultado-1core.txt taskset -c 0 ./merge.exec
+comando rodado:
+# started on Tue Oct 20 12:54:40 2026
+
+
+ Performance counter stats for 'taskset -c 0 ./merge.exec':
+
+              0,96 msec task-clock                       #    0,581 CPUs utilized             
+         2.668.336      cycles                           #    2,788 GHz                         (18,37%)
+         2.349.396      instructions                     #    0,88  insn per cycle            
+           492.868      branches                         #  514,982 M/sec                     
+            59.713      branch-misses                    #   12,12% of all branches           
+                 1      cpu-migrations                   #    1,045 K/sec                     
+                 1      context-switches                 #    1,045 K/sec                     
+           222.015      cache-references                 #  231,977 M/sec                     
+            67.250      cache-misses                     #   30,29% of all cache refs           (81,63%)
+                 0      major-faults                     #    0,000 /sec                      
+               124      minor-faults                     #  129,564 K/sec                     
+               124      page-faults                      #  129,564 K/sec                     
+     <not counted>      dTLB-loads                                                              (0,00%)
+     <not counted>      dTLB-load-misses                                                        (0,00%)
+   <not supported>      dTLB-stores                                                           
+   <not supported>      dTLB-store-misses                                                     
+     <not counted>      iTLB-loads                                                              (0,00%)
+     <not counted>      iTLB-load-misses                                                        (0,00%)
+
+       0,001646785 seconds time elapsed
+
+       0,000000000 seconds user
+       0,001633000 seconds sys
+
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog

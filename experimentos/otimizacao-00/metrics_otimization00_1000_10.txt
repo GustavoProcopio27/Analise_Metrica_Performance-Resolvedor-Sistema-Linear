@@ -1,0 +1,30 @@
+# started on Tue Oct 27 12:43:21 2026
+
+
+ Performance counter stats for 'taskset -c 0 ../fontes/solver-jacobi-mt-O0.exec 1E-10 0 ../fontes/A1000.bin ../fontes/B1000.bin otimizacao-00/solution_00_1000_10.bin':
+
+            331,11 msec task-clock                       #    0,755 CPUs utilized             
+     1.440.698.928      cycles                           #    4,351 GHz                         (49,79%)
+     3.552.091.183      instructions                     #    2,47  insn per cycle              (50,09%)
+       447.436.845      branches                         #    1,351 G/sec                       (50,42%)
+         1.049.242      branch-misses                    #    0,23% of all branches             (50,21%)
+                 2      cpu-migrations                   #    6,040 /sec                      
+             1.691      context-switches                 #    5,107 K/sec                     
+        32.291.040      cache-references                 #   97,525 M/sec                       (50,21%)
+         1.376.754      cache-misses                     #    4,26% of all cache refs           (50,21%)
+                 0      major-faults                     #    0,000 /sec                      
+             2.104      minor-faults                     #    6,354 K/sec                     
+             2.104      page-faults                      #    6,354 K/sec                     
+           282.499      dTLB-loads                       #  853,199 K/sec                       (49,91%)
+            88.532      dTLB-load-misses                 #   31,34% of all dTLB cache accesses  (49,58%)
+   <not supported>      dTLB-stores                                                           
+   <not supported>      dTLB-store-misses                                                     
+             1.022      iTLB-loads                       #    3,087 K/sec                       (49,79%)
+             4.586      iTLB-load-misses                 #  448,73% of all iTLB cache accesses  (49,79%)
+
+       0,438825223 seconds time elapsed
+
+       0,309032000 seconds user
+       0,023002000 seconds sys
+
+

@@ -1,0 +1,30 @@
+# started on Tue Oct 27 12:55:55 2026
+
+
+ Performance counter stats for 'taskset -c 0 ../fontes/solver-jacobi-mt-O3-native.exec 1E-10 0 ../fontes/A3000.bin ../fontes/B3000.bin otimizacao-03-native/solution_03-native_3000_6.bin':
+
+          1.131,82 msec task-clock                       #    0,911 CPUs utilized             
+     4.972.060.840      cycles                           #    4,393 GHz                         (49,92%)
+     9.167.218.900      instructions                     #    1,84  insn per cycle              (49,84%)
+     2.282.314.096      branches                         #    2,017 G/sec                       (49,79%)
+         4.215.786      branch-misses                    #    0,18% of all branches             (49,81%)
+                 1      cpu-migrations                   #    0,884 /sec                      
+             1.944      context-switches                 #    1,718 K/sec                     
+       448.287.010      cache-references                 #  396,077 M/sec                       (49,96%)
+         8.385.435      cache-misses                     #    1,87% of all cache refs           (50,08%)
+                 0      major-faults                     #    0,000 /sec                      
+            17.740      minor-faults                     #   15,674 K/sec                     
+            17.740      page-faults                      #   15,674 K/sec                     
+         2.156.374      dTLB-loads                       #    1,905 M/sec                       (50,16%)
+         2.060.686      dTLB-load-misses                 #   95,56% of all dTLB cache accesses  (50,21%)
+   <not supported>      dTLB-stores                                                           
+   <not supported>      dTLB-store-misses                                                     
+               221      iTLB-loads                       #  195,261 /sec                        (50,19%)
+             4.270      iTLB-load-misses                 # 1932,13% of all iTLB cache accesses  (50,04%)
+
+       1,242312609 seconds time elapsed
+
+       1,059591000 seconds user
+       0,073040000 seconds sys
+
+

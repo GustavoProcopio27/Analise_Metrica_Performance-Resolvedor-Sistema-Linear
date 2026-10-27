@@ -1,0 +1,101 @@
+ perf stat -e task-clock,cycles,instructions,branches,branch-misses,cpu-migrations,context-switches,cache-references,cache-misses,major-faults,minor-faults,page-faults,dTLB-loads,dTLB-load-misses,dTLB-stores,dTLB-store-misses,iTLB-loads,iTLB-load-misses ./merge.exec
+Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 
+ Performance counter stats for './merge.exec':
+
+              0,44 msec task-clock                       #    0,412 CPUs utilized             
+         1.490.517      cycles                           #    3,381 GHz                         (48,36%)
+           924.687      instructions                     #    0,62  insn per cycle            
+           190.879      branches                         #  433,030 M/sec                     
+            24.944      branch-misses                    #   13,07% of all branches           
+                 1      cpu-migrations                   #    2,269 K/sec                     
+                 1      context-switches                 #    2,269 K/sec                     
+           102.655      cache-references                 #  232,884 M/sec                     
+            33.556      cache-misses                     #   32,69% of all cache refs           (51,64%)
+                 0      major-faults                     #    0,000 /sec                      
+                57      minor-faults                     #  129,311 K/sec                     
+                57      page-faults                      #  129,311 K/sec                     
+     <not counted>      dTLB-loads                                                              (0,00%)
+     <not counted>      dTLB-load-misses                                                        (0,00%)
+   <not supported>      dTLB-stores                                                           
+   <not supported>      dTLB-store-misses                                                     
+     <not counted>      iTLB-loads                                                              (0,00%)
+     <not counted>      iTLB-load-misses                                                        (0,00%)
+
+       0,001070071 seconds time elapsed
+
+       0,000000000 seconds user
+       0,001103000 seconds sys
+
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+
+
+
+/media/aluno/SUB-MEMORY/ed/algoritmos_de_ordenacao ·········· with aluno@lab08013 at 12:26:16
+❯ perf stat -e task-clock,cycles,instructions,branches,branch-misses,cpu-migrations,context-switches,cache-references,cache-misses,major-faults,minor-faults,page-faults,dTLB-loads,dTLB-load-misses,dTLB-stores,dTLB-store-misses,iTLB-loads,iTLB-load-misses -r 10 ./merge.exec
+Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 Desordenado:
+12 5 6 27 100 99 56 49 77 55 
+Ordenado: 
+5 6 12 27 49 55 56 77 99 100 
+ Performance counter stats for './merge.exec' (10 runs):
+
+              0,32 msec task-clock                       #    0,421 CPUs utilized               ( +-  4,62% )
+         1.203.282      cycles                           #    3,735 GHz                         ( +-  1,70% )
+           912.443      instructions                     #    0,76  insn per cycle              ( +-  0,27% )
+           188.316      branches                         #  584,545 M/sec                       ( +-  0,30% )
+            22.598      branch-misses                    #   12,00% of all branches             ( +-  1,52% )
+                 0      cpu-migrations                   #    0,000 /sec                      
+                 0      context-switches                 #    0,000 /sec                      
+            92.895      cache-references                 #  288,352 M/sec                       ( +-  1,51% )
+     <not counted>      cache-misses                                                            ( +- 52,18% )  (0,00%)
+                 0      major-faults                     #    0,000 /sec                      
+                57      minor-faults                     #  176,932 K/sec                       ( +-  0,41% )
+                57      page-faults                      #  176,932 K/sec                       ( +-  0,41% )
+     <not counted>      dTLB-loads                                                              (0,00%)
+     <not counted>      dTLB-load-misses                                                        (0,00%)
+   <not supported>      dTLB-stores                                                           
+   <not supported>      dTLB-store-misses                                                     
+     <not counted>      iTLB-loads                                                              (0,00%)
+     <not counted>      iTLB-load-misses                                                        (0,00%)
+
+         0,0007661 +- 0,0000347 seconds time elapsed  ( +-  4,53% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+

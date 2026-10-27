@@ -1,0 +1,20 @@
+# started on Tue Oct 20 12:50:30 2026
+
+0,89;msec;task-clock;886106;100,00;0;CPUs utilized
+3437993;;cycles;69861;7,00;3;GHz
+2358293;;instructions;886106;100,00;0;insn per cycle
+494856;;branches;886106;100,00;558;M/sec
+60104;;branch-misses;886106;100,00;12;of all branches
+1;;cpu-migrations;886106;100,00;1;K/sec
+1;;context-switches;886106;100,00;1;K/sec
+219929;;cache-references;886106;100,00;248;M/sec
+65585;;cache-misses;816245;92,00;29;of all cache refs
+0;;major-faults;886106;100,00;0;/sec
+123;;minor-faults;886106;100,00;138;K/sec
+123;;page-faults;886106;100,00;138;K/sec
+<not counted>;;dTLB-loads;0;0,00;;
+<not counted>;;dTLB-load-misses;0;0,00;;
+<not supported>;;dTLB-stores;0;100,00;;
+<not supported>;;dTLB-store-misses;0;100,00;;
+<not counted>;;iTLB-loads;0;0,00;;
+<not counted>;;iTLB-load-misses;0;0,00;;
