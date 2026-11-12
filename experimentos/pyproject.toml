@@ -1,0 +1,21 @@
+[project]
+name = "trabalho-arquitetura"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "gustavoprocopio27", email = "gustavoprocopio727@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "numpy>=2.5.4",
+    "pandas>=3.1.1",
+    "plotly>=7.1.0",
+]
+
+
+
+[dependency-groups]
+dev = [
+
+]
