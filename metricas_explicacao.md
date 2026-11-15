@@ -32,3 +32,11 @@ Metricas são uma contagem de evento, ou uma medida derivada de eventos do perf
 2. ## (Branch Miss Rate) Taxa de Erro de Predição de Desvio    ->Erros de Predição de desvio branch-misses e branches
 
 3. ## (Cache Miss Rate) Taxa de Falta de Cache                -> Referências e faltas de cache: `cache-references` e `cache-misses`
+
+
+## Pc Novo
+identificação das máquinas, modelo e geração da CPU, núcleos físicos e CPUs lógicas,
+tamanhos de cache, memória instalada, sistema operacional, kernel, GCC, runtime OpenMP e
+versão do perf. Controlar ou registrar carga concorrente, afinidade, frequência dinâmica, Turbo e
+condições térmicas. Em processadores híbridos, identificar os tipos de núcleo utilizados e as PMUs
+correspondentes

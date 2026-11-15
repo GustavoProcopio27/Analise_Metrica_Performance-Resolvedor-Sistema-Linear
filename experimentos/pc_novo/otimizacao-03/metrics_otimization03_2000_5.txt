@@ -1,30 +1,18 @@
-# started on Tue Oct 27 12:50:33 2026
+# started on Thu Nov 12 10:40:35 2026
 
 
- Performance counter stats for 'taskset -c 0 ../fontes/solver-jacobi-mt-O3.exec 1E-10 0 ../fontes/A2000.bin ../fontes/B2000.bin otimizacao-03/solution_03_2000_5.bin':
+ Performance counter stats for 'taskset -c 0,1 ../fontes/solver-jacobi-mt-O3.exec 1E-10 0 ../fontes/A2000.bin ../fontes/B2000.bin otimizacao-03/solution_03_2000_5.bin':
 
-            367,12 msec task-clock                       #    0,766 CPUs utilized             
-     1.597.632.610      cycles                           #    4,352 GHz                         (49,90%)
-     4.109.610.503      instructions                     #    2,57  insn per cycle              (50,17%)
-       914.179.822      branches                         #    2,490 G/sec                       (50,23%)
-         2.367.831      branch-misses                    #    0,26% of all branches             (50,23%)
-                 1      cpu-migrations                   #    2,724 /sec                      
-             1.718      context-switches                 #    4,680 K/sec                     
-       128.049.155      cache-references                 #  348,798 M/sec                       (50,22%)
-         3.580.645      cache-misses                     #    2,80% of all cache refs           (50,10%)
-                 0      major-faults                     #    0,000 /sec                      
-             7.964      minor-faults                     #   21,693 K/sec                     
-             7.964      page-faults                      #   21,693 K/sec                     
-           997.410      dTLB-loads                       #    2,717 M/sec                       (49,83%)
-           893.137      dTLB-load-misses                 #   89,55% of all dTLB cache accesses  (49,77%)
-   <not supported>      dTLB-stores                                                           
-   <not supported>      dTLB-store-misses                                                     
-               516      iTLB-loads                       #    1,406 K/sec                       (49,77%)
-             4.103      iTLB-load-misses                 #  795,16% of all iTLB cache accesses  (49,78%)
+     3.747.448.296      cycles                                                                  (83,28%)
+     4.109.769.116      instructions                     #    1,10  insn per cycle              (83,37%)
+       907.216.576      branches                                                                (83,21%)
+         1.950.111      branch-misses                    #    0,21% of all branches             (83,28%)
+       150.037.264      cache-references                                                        (83,40%)
+         3.142.994      cache-misses                     #    2,09% of all cache refs           (83,46%)
 
-       0,479329502 seconds time elapsed
+       2,670719812 seconds time elapsed
 
-       0,326877000 seconds user
-       0,041110000 seconds sys
+       0,856349000 seconds user
+       0,039969000 seconds sys
 
 

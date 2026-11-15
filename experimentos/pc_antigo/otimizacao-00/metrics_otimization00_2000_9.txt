@@ -1,0 +1,18 @@
+# started on Thu Nov 12 13:25:55 2026
+
+
+ Performance counter stats for 'taskset -c 0,1 ../fontes/solver-jacobi-mt-O0.exec 1E-10 0 ../fontes/A2000.bin ../fontes/B2000.bin otimizacao-00/solution_00_2000_9.bin':
+
+     6.225.106.146      cycles:u                                                                (66,57%)
+    14.313.246.627      instructions:u                   #    2,30  insn per cycle              (83,24%)
+     1.790.424.381      branches:u                                                              (83,37%)
+           465.964      branch-misses:u                  #    0,03% of all branches             (83,26%)
+         3.687.716      cache-references:u                                                      (83,40%)
+         2.766.383      cache-misses:u                   #   75,016 % of all cache refs         (83,41%)
+
+       2,139074923 seconds time elapsed
+
+       1,903479000 seconds user
+       0,023843000 seconds sys
+
+

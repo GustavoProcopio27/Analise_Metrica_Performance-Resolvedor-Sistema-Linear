@@ -1,0 +1,1 @@
+Pedido para adequar a tabela de temperaturas e carga do pandas ao markdown no readme

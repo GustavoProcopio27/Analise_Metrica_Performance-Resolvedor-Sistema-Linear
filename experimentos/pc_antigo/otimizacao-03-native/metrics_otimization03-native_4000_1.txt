@@ -1,0 +1,18 @@
+# started on Thu Nov 12 13:38:41 2026
+
+
+ Performance counter stats for 'taskset -c 0,1 ../fontes/solver-jacobi-mt-O3-native.exec 1E-10 0 ../fontes/A4000.bin ../fontes/B4000.bin otimizacao-03-native/solution_03-native_4000_1.bin':
+
+     7.100.242.408      cycles:u                                                                (66,29%)
+    16.488.648.991      instructions:u                   #    2,32  insn per cycle              (83,18%)
+     3.673.916.262      branches:u                                                              (83,55%)
+           929.211      branch-misses:u                  #    0,03% of all branches             (83,36%)
+        86.627.551      cache-references:u                                                      (83,46%)
+        27.896.476      cache-misses:u                   #   32,203 % of all cache refs         (83,35%)
+
+       1,295729332 seconds time elapsed
+
+       2,183327000 seconds user
+       0,076820000 seconds sys
+
+

@@ -1,0 +1,21 @@
+# started on Fri Nov 13 14:34:49 2026
+
+
+ Performance counter stats for 'taskset -c 0,1 ../fontes/solver-jacobi-mt-O0.exec 1E-10 0 ../fontes/A1000.bin ../fontes/B1000.bin coleta_antigo_20261113_143437/O0_1000_rep3_saida.bin':
+
+            677,28 msec task-clock:u                     #    1,470 CPUs utilized             
+     2.147.917.836      cycles:u                         #    3,171 GHz                         (66,50%)
+     3.580.446.072      instructions:u                   #    1,67  insn per cycle              (83,25%)
+       458.370.727      branches:u                       #  676,781 M/sec                       (83,44%)
+           237.231      branch-misses:u                  #    0,05% of all branches             (83,38%)
+         1.093.709      cache-references:u               #    1,615 M/sec                       (83,40%)
+           697.848      cache-misses:u                   #   63,81% of all cache refs           (83,28%)
+                 0      context-switches:u               #    0,000 /sec                      
+                 0      cpu-migrations:u                 #    0,000 /sec                      
+
+       0,460869351 seconds time elapsed
+
+       0,671740000 seconds user
+       0,005979000 seconds sys
+
+

@@ -1,0 +1,2 @@
+horario,frequencia_MHz,temperatura_C,loadavg,memoria
+2026-11-13T14:37:13,"{""cpu3"": 3291.6, ""cpu1"": 3291.7, ""cpu2"": 3291.7, ""cpu0"": 3291.7}","{""coretemp_temp3_input"": 47.0, ""coretemp_temp1_input"": 47.0, ""coretemp_temp2_input"": 47.0, ""acpitz_temp1_input"": 27.8, ""acpitz_temp2_input"": 29.8, ""nouveau_temp1_input"": 51.0}","['2.07', '1.77', '1.74']",Mem.:           3853        2093         481          22        1277        1487

@@ -8,7 +8,8 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
-    "numpy>=2.5.4",
+    "ipykernel>=7.4.0",
+    "nbformat>=5.11.1",
     "pandas>=3.1.1",
     "plotly>=7.1.0",
 ]
@@ -19,3 +20,44 @@ dependencies = [
 dev = [
 
 ]
+
+[tool.ruff]
+
+exclude = [".git",".venv",".vscode","dist","node_modules","build"]
+line-length = 250 
+indent-width = 4
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+            "E4",  # imports múltiplos na mesma linha e problemas relacionados
+            "E7",  # comparações suspeitas e erros de sintaxe
+            "E9",  # erros graves de sintaxe que impedem o código de rodar ou causam mudanças graves
+            "F",   # variáveis/imports não usados
+            "I",   # ordenação automática de imports (estilo isort)
+            "B",   # bugs comuns (flake8-bugbear)
+            "SIM", # sugestões de simplificação de código
+            "E501"
+        ]
+fixable = [
+            "E4",
+            "I"
+        ]
+
+# Expressão regular para variáveis "dummy", permite
+# usar "_" ou "__var" sem gerar warning
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+ignore = ["SIM117", # evita forçar refatorações que podem reduzir legibilidade
+        "B905", # não exige strict=True em zip()
+        "B904", # não força encadeamento de exceções (raise ... from ...)
+        "B019",
+        ]
+
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+docstring-code-line-length = "dynamic"

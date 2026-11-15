@@ -1,0 +1,21 @@
+# started on Fri Nov 13 18:24:09 2026
+
+
+ Performance counter stats for 'taskset -c 0,1 ../fontes/solver-jacobi-mt-O3-native.exec 1E-10 0 ../fontes/A3000.bin ../fontes/B3000.bin coleta_novo_20261113_182203/O3-native_3000_rep1_saida.bin':
+
+            986,07 msec task-clock                       #    1,558 CPUs utilized             
+     4.351.051.620      cycles                           #    4,413 GHz                         (83,27%)
+    10.263.088.410      instructions                     #    2,36  insn per cycle              (83,27%)
+     2.282.859.620      branches                         #    2,315 G/sec                       (83,27%)
+         3.807.119      branch-misses                    #    0,17% of all branches             (83,46%)
+       435.527.166      cache-references                 #  441,681 M/sec                       (83,39%)
+         6.812.941      cache-misses                     #    1,56% of all cache refs           (83,34%)
+                 6      context-switches                 #    6,085 /sec                      
+                 1      cpu-migrations                   #    1,014 /sec                      
+
+       0,633052491 seconds time elapsed
+
+       0,929953000 seconds user
+       0,056997000 seconds sys
+
+
