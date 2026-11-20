@@ -146,20 +146,172 @@ Foram utilizados dois threads OpenMP, com OMP_NUM_THREADS=2 e OMP_DYNAMIC=FALSE,
 
 
 #### 3.3 Métricas
-
-
-# Fazer aqui pfvr
-
-
-### Instruções de Reprodução
+##### Comando de Coleta: 
+O comando padronizado para a instrumentação e execução do algoritmo foi:
 ```sh
-python automation.py    # Necessidade de responder input se foi utilizado no computador novo ou antigo
-python process_data.py  # Necessidade de responder input se foi utilizado no computador novo ou antigo
 
-
-# Executar blocos de código em analise.ipynb ce em calculos.ipynb onforme necessidade. Os gráficos também podem ser vistos separadamente nos arquivos .hmtl, mantendo responsividade, possibilidade de zoom e filtragem não existente no pdf
-
+OMP_NUM_THREADS=2 OMP_DYNAMIC=FALSE perf stat -e cycles,instructions,branches,branch-misses,cache-references,cache-misses -o ${destiny} taskset -c ${cores} ${executable} 1E-10 0 ${mat1} ${mat2} ${saida}
 ```
+
+
+* **`OMP_NUM_THREADS=2` e `OMP_DYNAMIC=FALSE`:** Fixa a execução em exatamente duas threads de trabalho, desabilitando o ajuste dinâmico do runtime OpenMP.
+* **`taskset -c 0,1`:** Impõe a afinidade de CPU (*CPU affinity*), vinculando os processos estritamente aos processadores lógicos 0 e 1 do sistema operacional.
+
+* `${executable}`: Solucionador do método de Jacobi.
+* `1E-10`: Critério de tolerância ($\varepsilon = 10^{-10}$) para convergência.
+* `0`: Desabilita a exibição do erro máximo a cada passo
+* `${mat1}` e `${mat2}`: Matrizes de coeficientes $A$ e vetor/matriz de termos independentes $B$ armazenados em formato binário (`Ax000.bin`, `Bx000.bin`).
+* `${saida}`: Arquivo de persistência da solução calculada ($X$).
+* `${destiny}`: Arquivo de texto que recebe a saída bruta dos contadores da PMU capturados pelo utilitário `perf stat`.
+
+<!-- 
+1. Nome conceitual, evento(s) ou nome usado com -M, unidade e significado arquitetural.
+2. Hipótese investigada e justificativa de sua relevância para Jacobi e para as otimizações.
+3. Comando de coleta, escopo da medição e, quando derivada, fórmula e eventos necessários.
+4. Disponibilidade e comparabilidade entre as máquinas. Nomes iguais não garantem semântica
+idêntica; explicar diferenças e limitações da Performance Monitoring Unit — PMU (Unidade
+de Monitoramento de Desempenho)
+
+-->
+##### 1. IPC (Instructions per Cycles)
+**Eventos da PMU/sintaxe no *perf***: `cycles`, `instructions`
+**Unidade:** Adimensional (instruções/ciclo para IPC; ciclos/instrução para CPI).
+Significado Arquitetural:
+> As arquiteturas x86-64 modernas são superescalares e podem buscar, decodificar, executar e aposentar várias instruções por ciclo, assim, é possível que o computador execute mais de uma instrução por ciclo. Nesse contexto, a métrica de IPC nos permite ver quantas instruções estão sendo executadas por ciclo no computador, analisando assim sua vazão(throughtput) de instruções e ajudando a analisar seu desempenho.
+> **IPC Alto (> 1.5 a 2.5):** Indica alta ocupação das unidades de execução (ALUs, FPUs, registradores vetoriais) e pipeline desobstruído.
+**IPC Baixo(≤1.0 ou ≤0.5)** Revela a ocorrência de bolhas no pipeline (*pipeline stalls*). O clock do processador avança, mas as instruções não são confirmadas porque as portas de despacho estão bloqueadas aguardando a chegada de dados da hierarquia de memória (*memory-bound stalls*) ou a resolução de dependências de dados. <!--melhorar esse texto daqui porque não está muito natural, em relação aos termos-->
+
+**Hipótese**: 
+> Espera-se que o IPC caia drasticamente nas execuções com otimização O3 e O3-native em comparação ao IPC nas execuções com otimização O0, uma vez que estas otimizações incluem a presença de vetorização automática de suas instruções, permitindo que uma única instrução opere sob múltiplos dados simultaneamente (SIMD — Single Instruction, Multiple Data). 
+> Espera-se que essa queda seja ainda mais acentuada na otimização O3-native, devido a presença de extensões do conjunto vetoriais como AVX2 E AVX-512 <!--Pesquisar sobre isso para saber falar bem--> que permitem a execução operações sobre 4 (256 bits) ou 8 (512 bits) números de precisão dupla de uma vez só. 
+> Também se espera que essa queda no IPC na CPU Intel(computador antigo) seja menor, uma vez que não há suporte a conjunto de instruções modernas de vetorização como os conjuntos AVX2 e AVX-512 citados, mantendo suporte a conjuntos de instruções vetoriais mais antigas como SSE4.1 e AVX 
+
+
+
+**Justificativa de relevância**:
+>
+>
+>
+>
+
+**Disponibilidade e Comparatividade entre máquinas**:
+> Disponibilidade: Os eventos `cycles` e `instructions` estão disponíveis nas duas máquinas utilizadas.
+>
+>
+>
+
+**Fórmula**: **IPC** = $\frac{Instructions}{Cycles}$
+
+##### 2. Taxa de Erros de Predição de Desvio (Branch Miss Rate)
+**Eventos da PMU/sintaxe no *perf***:  `branches` e `branch-misses`.
+**Unidade:** Porcentagem (%).
+**Significado Arquitetural**:
+> Para evitar que o pipeline congele a cada instrução de controle de fluxo condicional (`j`, `bne`, `beq`, `jal` etc.), o processador utiliza uma unidade de hardware especializada — o **Preditor de Desvios (*Branch Predictor*)** — composta por tabelas de histórico (*Branch History Table* - BHT, *Branch Target Buffer* - BTB e preditores baseados em perceptrons/TAGE). Ele infere o desfecho do salto antes de sua resolução lógica.
+> * **Acerto (*Branch Hit*):** O processador alimenta o pipeline com as instruções especulativas do fluxo correto sem perda de tempo.
+> * **Erro (*Branch Miss*):** O processador detecta que seguiu o caminho errado, descartas as instruções especuladas e o pipeline começa de novo da branch correta, o tempo gasto por um erro de predição de branch tende a ser proporcional ao número de estágios na pipeline entre busca e execução. Microprocessadores modernos tendem a ter pipelines mais longas, o que resulta em perdas gerais de 10 a 20 ciclos de clock
+
+Hipótese: 
+> Espera-se que o experimento tenha baixa taxa de erros de predição, uma vez que o metódo de resolução jacobi utiliza de loops aninhados, como é possível visualizar no código:
+```c
+#pragma omp parallel private(aux, div) shared (x0, x1, A, B, error, err, show, flag)
+{
+    do{
+            //Parte 1: resolve n equações
+            #pragma omp for
+            for (unsigned int j = 0; j < A->m; j++){ //M equações
+                aux    = 0.0;
+                div    = 0.0;
+
+                for (unsigned int i = 0; i < A->n; i++){ // n incógnitas
+                if (j != i)
+                    aux += (A->vetor[A->n * j + i] * x0[i]);
+                else
+                    div =  A->vetor[A->n * j + i];
+                }
+                x1[j] = (B->vetor[j] - aux) / div ;
+            }
+            //Parte 2: Critério de parada do métodoi
+
+            #pragma omp for reduction(max:err)
+            for (unsigned int j = 0; j < A->n; j++){
+                double b = fabs((x1[j] - x0[j]) / (x1[j] + EPSILON));
+                if (b > err)
+                    err = b;
+                //err = max(err, b);
+            }
+
+            //#pragma omp barrier
+            #pragma omp single
+            {
+                //Parte 3: Atualização/swap
+                double *swap = x0;
+                x0 = x1;
+                x1 = swap;
+                inter++;
+
+                if (show){
+                    printf("\t     Error: %.3E | step: %.5u | thread: %d\n", err, inter, omp_get_num_threads());
+                    fflush(stdout);
+                }
+
+                //Parte 4: 'Aplica o critéio de parada
+                flag = (err > error);
+                err = 0.0f;
+            }
+            #pragma omp barrier
+    }while (flag);
+}
+```
+
+
+
+**Justificativa de relevância**:
+> Como em um laço `for (int j = 0; j < N; j++)`, a condição de retorno do salto é verdadeira centenas ou milhares de vezes consecutivas e falsa apenas na última iteração. O histórico de saltos aprende esse comportamento rapidamente e realiza um grande número de predições acuradas, com minuscúla taxa de erro.
+> Como o critério de parada ($err < 10^{-10}$) é avaliado apenas uma vez a cada iteração externa completa sobre as matrizes, erros de predição de desvio nesse critério geram pouco impacto na métrica agregada.
+
+**Disponibilidade e Comparatividade entre máquinas**:
+> Disponibilidade: Os eventos `branches` e `branch-misses` estão disponíveis nas duas máquinas utilizadas.
+> **Composição do evento `branches`:** O contador genérico do Linux agrega todas as instruções de controle: saltos condicionais (`jcc`), saltos incondicionais (`jmp`), chamadas de sub-rotina (`call`) e instruções de retorno (`ret`). Compiladores diferentes (ou níveis distintos de otimização como `O2` e `O3`) podem converter laços em estruturas de desvio diferentes ou realizar loop unroling, reduzindo o número de desvios.
+
+
+**Fórmula**: Branch Miss Rate = $\frac{Branch Misses}{Branch}$ x 100
+  * `branches`: Total de instruções de desvio executadas e validadas.
+  * `branch-misses`: Total de instruções de desvio cujo alvo foi incorretamente previsto pelo hardware.
+  
+##### 3. Taxa de Erros de Acesso a Cache L3 (Cache Miss Rate)
+**Eventos da PMU/sintaxe no *perf***:  `cache-references` e `cache-misses`.
+**Unidade:** Porcentagem (%).
+**Significado Arquitetural**:
+> A hierarquia de memória existe para reduzir o impacto da diferença de velocidade entre a memória principal(DRAM) e o processador, utilizando acima da memória RAM múltiplos níveis de cache(L3, L2, L1, de modo que em relação a velocidade L1>L2>L3, e em relação a capacidade L3>L2>L1)
+> Os eventos `cache-references` e `cache-misses` medem o comportamento no último nível de cache(L3), de modo que o `cache-misses` permite analisar quantas vezes o processador foi forçado a acessar a memória RAM. Um acesso a memória RAM costuma impor uma perda de 50 a 80 nanosegundos, o que equivale a centenas de ciclos nos quais a CPU fica ociosa.
+>
+**Hipótese**: 
+> O algoritmo de Jacobi é tipicamente uma aplicação **limitada por memória (*memory-bound*)**, possuindo baixa intensidade aritmética (poucas operações de ponto flutuante para cada elemento lido da matriz). Para matrizes que excedem a capacidade física do cache L3, a taxa de cache-misses cresce acentuadamente, tornando o subsistema de memória o gargalo dominante do tempo de execução. <!-- Acredito que seja melhor a gente revisar esse texto daqui, em relação a baixa intensidade aritmetica -->
+> Para resolver um sistema linear com matrizes de ordem $N$, são necessários vetores e matrizes que consomem $O(N^2)$ elementos de 8 bytes (`double`). Para matrizes com dimensão na ordem dos milhares ($N \ge 2000$), a matriz de coeficientes $A$ pode ocupar dezenas ou até centenas de MB. Como caches L3 típicas possuem entre 8 MB e 32 MB em CPUS modernas, e quantidades abaixo de 16Mb em CPUs mais antigas, **a matriz é incapaz de residir inteiramente no cache entre uma iteração e a seguinte**, forçando contínuos recarregamentos da DRAM.
+> Assim, espera-se que a memória aparece como um gargalo no desempenho do método.
+
+**Justificativa de relevância**:
+<!--Escrever aqui -->
+
+
+
+**Disponibilidade e Comparatividade entre máquinas**:
+> Disparidade de Capacidade Física de Cache:A capacidade do cache L3 varia drasticamente entre processadores (ex.: 8 MB, 16 MB, 32 MB ou 64+ MB em processadores com *3D V-Cache*). Uma matriz que transborda o cache de uma CPU com 12 MB pode caber perfeitamente no cache de uma CPU com 32 MB. Nesse caso, uma máquina apresentará um cache-miss rate significativamente menor que a outra **exclusivamente devido ao hardware**, e não por mérito algorítmico.
+> Afinidade de Núcleos (`taskset -c 0,1`):** Como os núcleos lógicos 0 e 1 pertencem a núcleos físicos distintos, cada thread opera com suas próprias caches L1 e L2 dedicadas.
+
+**Fórmula**: Cache Miss Rate = $\frac{cache-misses}{cache-loads}$ x 100
+  * `cache-references`: Total de requisições enviadas ao cache de último nível (L3).
+  * `cache-misses`: Falhas no L3 que exigiram leitura/escrita na DRAM.
+
+
+
+
+
+
+
+---
+
+
 
 ### Limitações das amostras:
 1. A temperatura e carga foram medidos separadamente ao experimento principal no mesmo computador e condições, possuindo menos amostras e não havendo testes com as matrizes de tamanho 2000x2000 e 4000x4000, e logo não refletem com exatidão as condições durante cada execução do experimento principal

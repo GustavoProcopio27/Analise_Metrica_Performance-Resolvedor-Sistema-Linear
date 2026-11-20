@@ -56,10 +56,9 @@ for exec, folder, otimization_level in OTMIZATION_LEVELS:
 utilized_pc: str = input("Qual computador foi utilizado no experimento? ")
 
 if PC_ATUAL[utilized_pc] == TipoPC.NOVO.value:
-    #    shutil.move("otimizacao-00", "pc_novo")
-    #    shutil.move("otimizacao-03","pc_novo")
-    #    shutil.move("otimizacao-03-native","pc_novo")
-    ...
+    shutil.move("otimizacao-00", "pc_novo")
+    shutil.move("otimizacao-03","pc_novo")
+    shutil.move("otimizacao-03-native","pc_novo")
 else:
     shutil.move("otimizacao-00", "pc_antigo")
     shutil.move("otimizacao-03", "pc_antigo")
