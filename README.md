@@ -1,11 +1,29 @@
 # Análise de desempenho do método de Jacobi com Linux perf
 
-## Súmario
-
-## Ambiente:
+# Súmario
 
 
-### 1. Especificações dos Computadores: 
+- [Análise de desempenho do método de Jacobi com Linux perf](#análise-de-desempenho-do-método-de-jacobi-com-linux-perf)
+- [Súmario](#súmario)
+- [1. Ambiente:](#1-ambiente)
+  - [1.1 Especificações dos Computadores:](#11-especificações-dos-computadores)
+  - [1.2 Condição nos Computadores:](#12-condição-nos-computadores)
+    - [1.2.1 Temperatura:](#121-temperatura)
+    - [1.2.2 Carga Média](#122-carga-média)
+    - [1.2.3. Processos em Execução:](#123-processos-em-execução)
+- [2. Escopo do Experimento:](#2-escopo-do-experimento)
+  - [2.1 Níveis de Otimização](#21-níveis-de-otimização)
+  - [2.2 Matrizes e Dimensões](#22-matrizes-e-dimensões)
+  - [2.3 Métricas](#23-métricas)
+    - [2.3.1 Comando de Coleta:](#231-comando-de-coleta)
+    - [2.3.2. IPC (Instructions per Cycles)](#232-ipc-instructions-per-cycles)
+    - [2.3.3. Taxa de Erros de Predição de Desvio (Branch Miss Rate)](#233-taxa-de-erros-de-predição-de-desvio-branch-miss-rate)
+    - [2.3.3. Taxa de Erros de Acesso a Cache(Cache Miss Rate)](#233-taxa-de-erros-de-acesso-a-cachecache-miss-rate)
+    - [2.4. Limitações das amostras:](#24-limitações-das-amostras)
+# 1. Ambiente:
+
+
+## 1.1 Especificações dos Computadores: 
 |   Campo               |            Máquina Nova                   | Máquina Antiga                                    |
 | --------------------- | ----------------------------------------- | ------------------------------------------------- |
 | Id Maquina            | e7b7f49ddd09b1c0198869df64348520          | e7b7f49ddd09b1c0198869df64348520                  |
@@ -30,11 +48,11 @@
 | Afinidade de CPU      | CPUs lógicas 0 e 1: núcleos fisicos 0 e 1 | CPUs lógicas 0 e 1: núcleos fisicos 0 e 1         |
 | Turbo/Boost           | Suportado e Ativo                         | Não Suportado                                     |
 
-### 2. Condição nos Computadores: 
+## 1.2 Condição nos Computadores: 
     O registro das temperaturas e cargas foi feito posteriormente nas mesmas máquinas matrizes 1000x1000, 3000x3000 e 5000x5000, reduzindo o numero de dados para monitorar, e possibilitando ainda assim uma noção geral da carga e temperatura das máquinas durante a execução.
     Os aplicativos abertos se mantiveram inalterados. Diferentemente dos arquivos para a execução primária, análise e geração de gráficos, o código coleta dessas métricas foi gerado via inteligencia artifical ao invés de escrito manualmente.
 
-#### 1. Temperatura: 
+### 1.2.1 Temperatura: 
 
 
 
@@ -85,10 +103,11 @@ De modo geral, o PC antigo apresentou temperaturas médias mais elevadas nas con
 
 Ademais, deve-se ressaltar que a condição de resfriamento no ambiente também pode ter afetado nas medições. Atitudes como abertura de porta ou redução ou aumento dinamica na temperatura do ar condicionado para se conformar ao gasto de energia e temperatura podem ter afetado as medidas. Assim como também picos de carga na execução de processos no computador.
 
-#### 2. Carga Média
+### 1.2.2 Carga Média
 A carga média do processador foi obtida por meio do arquivo /proc/loadavg, considerando o valor referente ao último minuto durante as execuções. Essa métrica permite observar a demanda de processamento imposta por cada configuração experimental.
 
 * PC novo — AMD Ryzen 5 5600G
+  
 | Otimização | Media 1000  | DP 1000 | Media 3000 | DP 3000 | Media 5000 | DP 5000 |
 | ---------- | ----------  | ------- | ---------- | ------- | ---------- | ------- |
 | O0	     |   0,79	   | 0,18	 | 0,75       | 0,03    | 0,91       | 0,05    |  
@@ -102,6 +121,7 @@ A carga média do processador foi obtida por meio do arquivo /proc/loadavg, cons
 `O3`-native: Apresentou uma redução progressiva da carga média, passando de 1,44 nas matrizes de 1000 × 1000 para 0,87 nas matrizes de 5000 × 5000. Esse comportamento indica uma diminuição da carga média registrada nas execuções com matrizes maiores
 
 * PC antigo — Intel Core i3-2120
+  
 | Otimização | Media 1000  | DP 1000 | Media 3000 | DP 3000 | Media 5000 | DP 5000 |
 | ---------- | ----------  | ------- | ---------- | ------- | ---------- | ------- |
 | O0	     |   1,90	   | 0,16	 | 1,51       | 0,09    | 2,29       | 0,50    |  
@@ -116,16 +136,16 @@ A carga média do processador foi obtida por meio do arquivo /proc/loadavg, cons
 
 `O3-native`: Apresentou carga média de 2,07 para matrizes de 1000 × 1000, reduzindo para 1,82 nas matrizes de 3000 × 3000 e apresentando uma pequena elevação para 1,84 nas matrizes de 5000 × 5000. Entre as três configurações, apresentou o comportamento mais estável para os dois maiores tamanhos de matriz.
 
-### 3. Processos em Execução:
+### 1.2.3. Processos em Execução:
 Durante a execução dos experimentos, os seguintes programas permaneciam abertos:
 1. Visual Studio Code (VS Code);
 2. Mozilla Firefox.
 Além desses programas, outros processos e serviços do sistema operacional permaneciam ativos, podendo contribuir para a carga geral das máquinas.
 
 
-### 3. Escopo do Experimento:
+# 2. Escopo do Experimento:
 
-#### 3.1 Níveis de Otimização
+## 2.1 Níveis de Otimização
 Foram utilizadas três configurações de compilação:
 * `O0`: Na qual as otimizações do compilador são desativadas, e as instruções do código-fonte são traduzidas de forma direta. Útil para servir como baseline para medir o ganho bruto das otimizações. Também acelera o processo de compilação.
   
@@ -133,7 +153,7 @@ Foram utilizadas três configurações de compilação:
   
 * `O3-native`: Nível `O3` junto a flag `-march=native`, o compilador detecta a CPU da máquina e libera instruções de hardware especificas e registradores mais largos. Exemplos são as extensões vetoriais AVX2, AVX-512 — além de ajustar o escalonamento de instruções às latências e unidades
 
-#### 3.2 Matrizes e Dimensões
+## 2.2 Matrizes e Dimensões
 Foram utilizadas matrizes de dimensões 1000×1000, 2000×2000, 3000×3000, 4000×4000 e 5000×5000.
 
 Para cada combinação de máquina, otimização e tamanho de matriz, foram realizadas dez execuções, totalizando:
@@ -145,8 +165,8 @@ Para cada combinação de máquina, otimização e tamanho de matriz, foram real
 Foram utilizados dois threads OpenMP, com OMP_NUM_THREADS=2 e OMP_DYNAMIC=FALSE, restringindo a execução às CPUs lógicas 0 e 1 por meio de taskset -c 0,1.
 
 
-#### 3.3 Métricas
-##### Comando de Coleta: 
+## 2.3 Métricas
+### 2.3.1 Comando de Coleta: 
 O comando padronizado para a instrumentação e execução do algoritmo foi:
 ```sh
 
@@ -173,45 +193,60 @@ idêntica; explicar diferenças e limitações da Performance Monitoring Unit �
 de Monitoramento de Desempenho)
 
 -->
-##### 1. IPC (Instructions per Cycles)
+---
+
+### 2.3.2. IPC (Instructions per Cycles)
 **Eventos da PMU/sintaxe no *perf***: `cycles`, `instructions`
+
 **Unidade:** Adimensional (instruções/ciclo para IPC; ciclos/instrução para CPI).
-Significado Arquitetural:
-> As arquiteturas x86-64 modernas são superescalares e podem buscar, decodificar, executar e aposentar várias instruções por ciclo, assim, é possível que o computador execute mais de uma instrução por ciclo. Nesse contexto, a métrica de IPC nos permite ver quantas instruções estão sendo executadas por ciclo no computador, analisando assim sua vazão(throughtput) de instruções e ajudando a analisar seu desempenho.
-> **IPC Alto (> 1.5 a 2.5):** Indica alta ocupação das unidades de execução (ALUs, FPUs, registradores vetoriais) e pipeline desobstruído.
+
+**Significado Arquitetural**:
+As arquiteturas x86-64 modernas são superescalares e podem buscar, decodificar, executar e aposentar várias instruções por ciclo, assim, é possível que o computador execute mais de uma instrução por ciclo. Nesse contexto, a métrica de IPC nos permite ver quantas instruções estão sendo executadas por ciclo no computador, analisando assim sua vazão(throughtput) de instruções e ajudando a analisar seu desempenho.
+
+**IPC Alto (> 1.5 a 2.5):** Indica alta ocupação das unidades de execução (ALUs, FPUs, registradores vetoriais) e pipeline desobstruído.
+
 **IPC Baixo(≤1.0 ou ≤0.5)** Revela a ocorrência de bolhas no pipeline (*pipeline stalls*). O clock do processador avança, mas as instruções não são confirmadas porque as portas de despacho estão bloqueadas aguardando a chegada de dados da hierarquia de memória (*memory-bound stalls*) ou a resolução de dependências de dados. <!--melhorar esse texto daqui porque não está muito natural, em relação aos termos-->
 
 **Hipótese**: 
-> Espera-se que o IPC caia drasticamente nas execuções com otimização O3 e O3-native em comparação ao IPC nas execuções com otimização O0, uma vez que estas otimizações incluem a presença de vetorização automática de suas instruções, permitindo que uma única instrução opere sob múltiplos dados simultaneamente (SIMD — Single Instruction, Multiple Data). 
-> Espera-se que essa queda seja ainda mais acentuada na otimização O3-native, devido a presença de extensões do conjunto vetoriais como AVX2 E AVX-512 <!--Pesquisar sobre isso para saber falar bem--> que permitem a execução operações sobre 4 (256 bits) ou 8 (512 bits) números de precisão dupla de uma vez só. 
-> Também se espera que essa queda no IPC na CPU Intel(computador antigo) seja menor, uma vez que não há suporte a conjunto de instruções modernas de vetorização como os conjuntos AVX2 e AVX-512 citados, mantendo suporte a conjuntos de instruções vetoriais mais antigas como SSE4.1 e AVX 
+Espera-se que o **IPC** caia drasticamente nas execuções com otimização O3 e O3-native em comparação ao IPC nas execuções com otimização O0, uma vez que estas otimizações incluem a presença de vetorização automática de suas instruções, permitindo que uma única instrução opere sob múltiplos dados simultaneamente (SIMD — Single Instruction, Multiple Data). 
+Espera-se que essa queda seja ainda mais acentuada na otimização O3-native, devido a presença de extensões do conjunto vetoriais como AVX2 E AVX-512 que permitem a execução operações sobre 4 (256 bits) ou 8 (512 bits) números de precisão dupla de uma vez só. 
+Também se espera que essa queda no IPC na CPU Intel(computador antigo) seja menor, uma vez que não há suporte a conjunto de instruções modernas de vetorização como os conjuntos AVX2 e AVX-512 citados, mantendo suporte a conjuntos de instruções vetoriais mais antigas como SSE4.1 e AVX 
 
 
 
 **Justificativa de relevância**:
->
->
->
->
+
+* A análise do IPC é fundamental porque o tempo de execução é regido pela relação clássica:
+  $$Tempo = \frac{\text{Instruções}}{\text{IPC} \times \text{Frequência}} = \text{Instruções} \times \text{CPI} \times \text{Período de Clock}$$
+* Quando a vetorização atua em `O3` e `O3-native`, o número absoluto de instruções despenca (ex.: queda de $\approx 3,5$ bilhões para $\approx 900$ milhões em $N=1000$). Como instruções vetoriais demandam mais estágios e realizam o trabalho equivalente a múltiplas instruções escalares, o IPC pode se manter estável ou até cair ligeiramente. A métrica comprova que a aceleração decorre da redução do total de instruções úteis executadas, e não de um mero aumento na frequência de despacho de instruções escalares.
+
 
 **Disponibilidade e Comparatividade entre máquinas**:
-> Disponibilidade: Os eventos `cycles` e `instructions` estão disponíveis nas duas máquinas utilizadas.
->
->
->
+Disponibilidade: Os eventos `cycles` e `instructions` estão disponíveis nas duas máquinas utilizadas.
 
-**Fórmula**: **IPC** = $\frac{Instructions}{Cycles}$
+* Disponibilidade: Os eventos cycles e instructions são universais e contidos nos contadores arquiteturais básicos em arquiteturas Intel e AMD.
+* Diferenças semânticas na PMU:
+    *instructions*: O evento monitora instruções confirmadas/aposentadas (retired), descartando instruções executadas sob ramos especulativos incorretos. Entretanto, o compilador emite instruções distintas para a AMD Zen 3 (suporte a AVX2/FMA3 de 256 bits) e para a Intel Sandy Bridge (limitada a instruções escalares ou AVX de 1ª geração sem FMA). Adicionalmente, técnicas de macro-fusion diferem entre as gerações.
+    *cycles*: Mede ciclos não parados (CPU_CLK_UNHALTED). No Core i3-2120, a frequência é nominalmente estática (3,30 GHz, sem Turbo Boost). No Ryzen 5 5600G, a frequência é dinâmica (Precision Boost ativo, variando entre 3,9 e 4,4 GHz). Assim, comparações absolutas de ciclos entre as duas máquinas são desprovidas de base isomórfica, devendo-se comparar o speedup e ganhos relativos.
 
-##### 2. Taxa de Erros de Predição de Desvio (Branch Miss Rate)
+* Limitações da PMU: Devido à requisição de 6 eventos simultâneos para uma PMU de 4 contadores de propósito geral, o perf operou com multiplexação temporal (≈83% do tempo ativo para instructions, e 66% do tempo para cycles), estimando os totais por extrapolação linear. O uso do sufixo :u (cycles:u, instructions:u) filtrou o ruído de chamadas ao kernel, isolando a computação do espaço de usuário.
+  
+> **Fórmula: **IPC** = $\frac{Instructions}{Cycles}$**
+
+---
+
+### 2.3.3. Taxa de Erros de Predição de Desvio (Branch Miss Rate)
 **Eventos da PMU/sintaxe no *perf***:  `branches` e `branch-misses`.
-**Unidade:** Porcentagem (%).
-**Significado Arquitetural**:
-> Para evitar que o pipeline congele a cada instrução de controle de fluxo condicional (`j`, `bne`, `beq`, `jal` etc.), o processador utiliza uma unidade de hardware especializada — o **Preditor de Desvios (*Branch Predictor*)** — composta por tabelas de histórico (*Branch History Table* - BHT, *Branch Target Buffer* - BTB e preditores baseados em perceptrons/TAGE). Ele infere o desfecho do salto antes de sua resolução lógica.
-> * **Acerto (*Branch Hit*):** O processador alimenta o pipeline com as instruções especulativas do fluxo correto sem perda de tempo.
-> * **Erro (*Branch Miss*):** O processador detecta que seguiu o caminho errado, descartas as instruções especuladas e o pipeline começa de novo da branch correta, o tempo gasto por um erro de predição de branch tende a ser proporcional ao número de estágios na pipeline entre busca e execução. Microprocessadores modernos tendem a ter pipelines mais longas, o que resulta em perdas gerais de 10 a 20 ciclos de clock
 
-Hipótese: 
-> Espera-se que o experimento tenha baixa taxa de erros de predição, uma vez que o metódo de resolução jacobi utiliza de loops aninhados, como é possível visualizar no código:
+**Unidade:** Porcentagem (%).
+
+**Significado Arquitetural**:
+Para evitar que o pipeline congele a cada instrução de controle de fluxo condicional (`j`, `bne`, `beq`, `jal` etc.), o processador utiliza uma unidade de hardware especializada — o **Preditor de Desvios (*Branch Predictor*)** — composta por tabelas de histórico (*Branch History Table* - BHT, *Branch Target Buffer* - BTB e preditores baseados em perceptrons/TAGE). Ele infere o desfecho do salto antes de sua resolução lógica.
+* **Acerto (*Branch Hit*):** O processador alimenta o pipeline com as instruções especulativas do fluxo correto sem perda de tempo.
+* **Erro (*Branch Miss*):** O processador detecta que seguiu o caminho errado, descartas as instruções especuladas e o pipeline começa de novo da branch correta, o tempo gasto por um erro de predição de branch tende a ser proporcional ao número de estágios na pipeline entre busca e execução. Microprocessadores modernos tendem a ter pipelines mais longas, o que resulta em perdas gerais de 10 a 20 ciclos de clock
+
+**Hipótese**: 
+Espera-se que o experimento tenha baixa taxa de erros de predição, uma vez que o metódo de resolução jacobi utiliza de loops aninhados, como é possível visualizar no código:
 ```c
 #pragma omp parallel private(aux, div) shared (x0, x1, A, B, error, err, show, flag)
 {
@@ -266,29 +301,40 @@ Hipótese:
 
 
 **Justificativa de relevância**:
-> Como em um laço `for (int j = 0; j < N; j++)`, a condição de retorno do salto é verdadeira centenas ou milhares de vezes consecutivas e falsa apenas na última iteração. O histórico de saltos aprende esse comportamento rapidamente e realiza um grande número de predições acuradas, com minuscúla taxa de erro.
-> Como o critério de parada ($err < 10^{-10}$) é avaliado apenas uma vez a cada iteração externa completa sobre as matrizes, erros de predição de desvio nesse critério geram pouco impacto na métrica agregada.
+Como em um laço `for (int j = 0; j < N; j++)`, a condição de retorno do salto é verdadeira centenas ou milhares de vezes consecutivas e falsa apenas na última iteração. O histórico de saltos aprende esse comportamento rapidamente e realiza um grande número de predições acuradas, com minuscúla taxa de erro.
+
+Como o critério de parada ($err < 10^{-10}$) é avaliado apenas uma vez a cada iteração externa completa sobre as matrizes, erros de predição de desvio nesse critério geram pouco impacto na métrica agregada.
 
 **Disponibilidade e Comparatividade entre máquinas**:
-> Disponibilidade: Os eventos `branches` e `branch-misses` estão disponíveis nas duas máquinas utilizadas.
-> **Composição do evento `branches`:** O contador genérico do Linux agrega todas as instruções de controle: saltos condicionais (`jcc`), saltos incondicionais (`jmp`), chamadas de sub-rotina (`call`) e instruções de retorno (`ret`). Compiladores diferentes (ou níveis distintos de otimização como `O2` e `O3`) podem converter laços em estruturas de desvio diferentes ou realizar loop unroling, reduzindo o número de desvios.
+* **Disponibilidade:** Os contadores `branches` e `branch-misses` estão presentes nas PMUs de ambas as máquinas.
+  
+* **Composição do evento:** O contador genérico agrega todos os ramos arquiteturais validados (saltos condicionais, incondicionais, chamadas e retornos). Compiladores diferentes (ou níveis distintos de otimização como `O2` e `O3`) podem converter laços em estruturas de desvio diferentes ou realizar loop unroling, reduzindo o número de desvios.
+  
+* **Diferenças na PMU e preditores:** O Ryzen 5 5600G (Zen 3) implementa um preditor TAGE complexo com suporte a histórico longo e buffers consideravelmente maiores do que o preditor de 2 níveis da Sandy Bridge (2011). Isso faz com que taxas residuais de miss ligeiramente menores no PC Novo reflitam o avanço da microarquitetura, e não propriedades algorítmicas.
+  
+* **Afinidade (`taskset -c 0,1`):** Como as CPUs lógicas 0 e 1 foram mapeadas para núcleos físicos distintos (núcleos 0 e 1) em ambas as máquinas, as threads não concorreram pelos buffers físicos de histórico de salto (BTB), operando sem interferência mútua de predição.
 
 
-**Fórmula**: Branch Miss Rate = $\frac{Branch Misses}{Branch}$ x 100
+> **Fórmula: Branch Miss Rate = $\frac{Branch Misses}{Branch}$ x 100**
   * `branches`: Total de instruções de desvio executadas e validadas.
   * `branch-misses`: Total de instruções de desvio cujo alvo foi incorretamente previsto pelo hardware.
   
-##### 3. Taxa de Erros de Acesso a Cache L3 (Cache Miss Rate)
+---
+
+### 2.3.3. Taxa de Erros de Acesso a Cache(Cache Miss Rate)
 **Eventos da PMU/sintaxe no *perf***:  `cache-references` e `cache-misses`.
 **Unidade:** Porcentagem (%).
 **Significado Arquitetural**:
-> A hierarquia de memória existe para reduzir o impacto da diferença de velocidade entre a memória principal(DRAM) e o processador, utilizando acima da memória RAM múltiplos níveis de cache(L3, L2, L1, de modo que em relação a velocidade L1>L2>L3, e em relação a capacidade L3>L2>L1)
-> Os eventos `cache-references` e `cache-misses` medem o comportamento no último nível de cache(L3), de modo que o `cache-misses` permite analisar quantas vezes o processador foi forçado a acessar a memória RAM. Um acesso a memória RAM costuma impor uma perda de 50 a 80 nanosegundos, o que equivale a centenas de ciclos nos quais a CPU fica ociosa.
->
+A hierarquia de memória existe para reduzir o impacto da diferença de velocidade entre a memória principal(DRAM) e o processador, utilizando acima da memória RAM múltiplos níveis de cache(L3, L2, L1, de modo que em relação a velocidade L1>L2>L3, e em relação a capacidade L3>L2>L1)
+
+Os eventos `cache-references` e `cache-misses` medem o comportamento no último nível de cache(L3), de modo que o `cache-misses` permite analisar quantas vezes o processador foi forçado a acessar a memória RAM. Um acesso a memória RAM costuma impor uma perda de 50 a 80 nanosegundos, o que equivale a centenas de ciclos nos quais a CPU fica ociosa.
+
 **Hipótese**: 
-> O algoritmo de Jacobi é tipicamente uma aplicação **limitada por memória (*memory-bound*)**, possuindo baixa intensidade aritmética (poucas operações de ponto flutuante para cada elemento lido da matriz). Para matrizes que excedem a capacidade física do cache L3, a taxa de cache-misses cresce acentuadamente, tornando o subsistema de memória o gargalo dominante do tempo de execução. <!-- Acredito que seja melhor a gente revisar esse texto daqui, em relação a baixa intensidade aritmetica -->
-> Para resolver um sistema linear com matrizes de ordem $N$, são necessários vetores e matrizes que consomem $O(N^2)$ elementos de 8 bytes (`double`). Para matrizes com dimensão na ordem dos milhares ($N \ge 2000$), a matriz de coeficientes $A$ pode ocupar dezenas ou até centenas de MB. Como caches L3 típicas possuem entre 8 MB e 32 MB em CPUS modernas, e quantidades abaixo de 16Mb em CPUs mais antigas, **a matriz é incapaz de residir inteiramente no cache entre uma iteração e a seguinte**, forçando contínuos recarregamentos da DRAM.
-> Assim, espera-se que a memória aparece como um gargalo no desempenho do método.
+>O algoritmo de Jacobi é tipicamente uma aplicação **limitada por memória (*memory-bound*)**. Para matrizes que excedem a capacidade física do cache L3, a taxa de cache-misses cresce acentuadamente, tornando o subsistema de memória o gargalo dominante do tempo de execução.
+
+Para resolver um sistema linear com matrizes de ordem $N$, são necessários vetores e matrizes que consomem $O(N^2)$ elementos de 8 bytes (`double`). Para matrizes com dimensão na ordem dos milhares ($N \ge 2000$), a matriz de coeficientes $A$ pode ocupar dezenas ou até centenas de MB. Como caches L3 típicas possuem entre 8 MB e 32 MB em CPUS modernas, e quantidades abaixo de 16Mb em CPUs mais antigas, **a matriz é incapaz de residir inteiramente no cache entre uma iteração e a seguinte**, forçando contínuos recarregamentos da DRAM.
+
+Assim, espera-se que a memória aparece como um gargalo no desempenho do método.
 
 **Justificativa de relevância**:
 <!--Escrever aqui -->
@@ -296,10 +342,19 @@ Hipótese:
 
 
 **Disponibilidade e Comparatividade entre máquinas**:
-> Disparidade de Capacidade Física de Cache:A capacidade do cache L3 varia drasticamente entre processadores (ex.: 8 MB, 16 MB, 32 MB ou 64+ MB em processadores com *3D V-Cache*). Uma matriz que transborda o cache de uma CPU com 12 MB pode caber perfeitamente no cache de uma CPU com 32 MB. Nesse caso, uma máquina apresentará um cache-miss rate significativamente menor que a outra **exclusivamente devido ao hardware**, e não por mérito algorítmico.
-> Afinidade de Núcleos (`taskset -c 0,1`):** Como os núcleos lógicos 0 e 1 pertencem a núcleos físicos distintos, cada thread opera com suas próprias caches L1 e L2 dedicadas.
+* **Disponibilidade:** Os eventos genéricos `cache-references` e `cache-misses` são disponibilizados pelo `perf` para ambas as plataformas x86.
+  
+* **Diferenças semânticas na PMU:**
+  * Na Intel Sandy Bridge, mapeia-se `LONGEST_LAT_CACHE.REFERENCE` e `LONGEST_LAT_CACHE.MISS`.
+  * Na AMD Zen 3, mapeia-se `L2_REQUEST_G1` e `L2_CACHE_REQ_STAT.IC_DC_MISS_IN_L2`.
 
-**Fórmula**: Cache Miss Rate = $\frac{cache-misses}{cache-loads}$ x 100
+* **Disparidade de capacidade física:** O PC Antigo possui apenas **3 MiB de cache L3 e 512KiB de cache L3**, enquanto o PC Novo dispõe de **16 MiB de cache L3 e 3MiB de cache L2**. Uma matriz de $1000 \times 1000$ ($\approx 8\text{ MB}$) cabe confortavelmente na L3 do Ryzen (junto aos vetores auxiliares), mas transborda inteiramente a L3 do Core i3. Logo, o menor número de misses no PC Novo reflete primordialmente a especificação do silício, e não mérito algorítmico.
+  
+* **Prefetchers e Barramento:** O PC Novo utiliza barramento DDR4-2400 (maior taxa de transferência) e circuitos de pré-busca (*hardware prefetchers*) muito mais agressivos da arquitetura Zen 3, que identificam com eficiência a varredura contínua de linhas em C (*row-major*). O PC Antigo opera com DDR3-1333 e pré-buscadores de geração anterior.
+  
+* **Afinidade (`taskset -c 0,1`):** A execução vinculada a dois núcleos físicos distintos garantiu que cada thread operasse com suas próprias caches L1 e L2 privativas, dividindo apenas o pool compartilhado da L3.
+
+> **Fórmula: Cache Miss Rate = $\frac{cache-misses}{cache-loads}$ x 100**
   * `cache-references`: Total de requisições enviadas ao cache de último nível (L3).
   * `cache-misses`: Falhas no L3 que exigiram leitura/escrita na DRAM.
 
@@ -313,8 +368,11 @@ Hipótese:
 
 
 
-### Limitações das amostras:
-1. A temperatura e carga foram medidos separadamente ao experimento principal no mesmo computador e condições, possuindo menos amostras e não havendo testes com as matrizes de tamanho 2000x2000 e 4000x4000, e logo não refletem com exatidão as condições durante cada execução do experimento principal
+### 2.4. Limitações das amostras:
+1. **Separação de Medições de Temperatura e Carga:** O registro de temperatura e carga de CPU foi conduzido posteriormente ao experimento principal nas mesmas máquinas e sob condições controladas, cobrindo as dimensões $1000 \times 1000$, $3000 \times 3000$ e $5000 \times 5000$. Portanto, expressam o comportamento térmico sob carga, mas não refletem com exatidão instantânea cada uma das execuções do conjunto de dados principal.
    
-2. A carga medida não reflete a porcentagem de uso de CPU, mas a média de tarefas executáveis/esperando CPU ao longo do tempo no último minuto;
+2. **Semântica da Métrica de Carga:** A carga obtida via `/proc/loadavg` quantifica o número médio de tarefas executáveis ou aguardando CPU no último minuto, não correspondendo linearmente à porcentagem instantânea de utilização de CPU.
    
+3. **Diferenças Semanticas nas metricas de cache**: A diferença de qual acesso a nível de cache é medido no processador Intel e no processador AMD tornam as métricas não diretamente comparáveis.
+   
+4. **Multiplexação de Contadores:** Pela requisição simultânea de 6 eventos em PMUs com 4 contadores de propósito geral, o `perf` operou com amostragem ponderada no tempo ($\approx 83\%$), extrapolando linearmente as contagens brutas.
