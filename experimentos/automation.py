@@ -51,7 +51,6 @@ for exec, folder, otimization_level in OTMIZATION_LEVELS:
             )
             print(f"running: {command}")
             run(command, shell=True, check=True)
-            sleep(4)
 
 utilized_pc: str = input("Qual computador foi utilizado no experimento? ")
 

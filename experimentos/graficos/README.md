@@ -1,0 +1,1 @@
+# Diretório com os gráficos utilizados no relatório salvos em HTML, de forma que a interatividade e possibilidade de filtragem seja preservada
