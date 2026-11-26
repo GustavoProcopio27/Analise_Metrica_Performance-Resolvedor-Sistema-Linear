@@ -2,8 +2,8 @@
 
 ## Integrantes do Grupo
 * **[Gustavo Luiz da Silvs Procópio]** — Matrícula: `[20260002990]`
-* **[Pablo Torres Santos da Silva]** — Matrícula: `[]`
-* **[Pedro Lucas de Oliveira Alves]** — Matrícula: `[]`
+* **[Pablo Torres Santos da Silva]** — Matrícula: `[20260023176]`
+* **[Pedro Lucas de Oliveira Alves]** — Matrícula: `[20260011184]`
 
 ## Estrutura do repositório
 ```sh
